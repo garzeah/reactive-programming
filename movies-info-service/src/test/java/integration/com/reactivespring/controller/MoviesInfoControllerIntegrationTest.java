@@ -119,6 +119,21 @@ class MoviesInfoControllerIntegrationTest {
     }
 
     @Test
+    void updateMovieInfoNotFound() {
+        String movieInfoId = "def";
+        MovieInfo movieInfo =  new MovieInfo(null, "Dark Knight Rises 2",
+                2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15"));
+
+        webTestClient
+                .put()
+                .uri(MOVIES_INFO_URL + "/{id}", movieInfoId)
+                .bodyValue(movieInfo)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
+
+    @Test
     void deleteMovieInfo() {
         movieInfoRepository.deleteById("abc").block();
         Flux<MovieInfo> movieInfos = movieInfoRepository.findAll();
@@ -138,5 +153,16 @@ class MoviesInfoControllerIntegrationTest {
             .exchange()
             .expectStatus()
             .isNoContent();
+    }
+
+    @Test
+    void getMovieInfoByIdNotFound() {
+        var id = "def";
+        webTestClient
+                .get()
+                .uri(MOVIES_INFO_URL + "/{id}", id)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
     }
 }
