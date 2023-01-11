@@ -9,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -75,6 +78,24 @@ class MoviesInfoControllerIntegrationTest {
             .is2xxSuccessful()
             .expectBodyList(MovieInfo.class)
             .hasSize(3);
+    }
+
+    @Test
+    void getAllMovieInfoByYear() {
+
+        URI uri = UriComponentsBuilder
+            .fromUriString(MOVIES_INFO_URL)
+            .queryParam("year", 2005)
+                    .buildAndExpand().toUri();
+
+        webTestClient
+                .get()
+                .uri(uri)
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .expectBodyList(MovieInfo.class)
+                .hasSize(3);
     }
 
     @Test

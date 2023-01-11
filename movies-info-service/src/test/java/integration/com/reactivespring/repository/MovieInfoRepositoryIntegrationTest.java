@@ -47,7 +47,29 @@ class MovieInfoRepositoryIntegrationTest {
 
         StepVerifier
             .create(moviesInfoFlux)
-            .expectNextCount(3);
+            .expectNextCount(3)
+                .verifyComplete();
+    }
+
+    @Test
+    void findByName() {
+
+        var movieInfosMono = movieInfoRepository.findByName("Batman Begins").log();
+
+        StepVerifier.create(movieInfosMono)
+                .expectNextCount(1)
+                .verifyComplete();
+    }
+
+
+    @Test
+    void findByYear() {
+        Flux<MovieInfo> moviesInfoFlux = movieInfoRepository.findByYear(2005).log();
+
+        StepVerifier
+                .create(moviesInfoFlux)
+                .expectNextCount(1)
+                .verifyComplete();
     }
 
     @Test
